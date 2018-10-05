@@ -49,6 +49,19 @@ class App extends Component {
     document.getElementById('age').value = "";
   }
 
+  handledelete = (e) => {
+    e.preventDefault();
+    const { id } = e.target;
+    fetch('/users/'+id, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    })
+    .then(res => this.getUser());
+  }
+
   render() {
     return (
       <div className="App">
@@ -59,7 +72,10 @@ class App extends Component {
         <button onClick={this.handleClick}>등록</button>
         </p>
         {this.state.users.map(user =>
-          <div key={user._id}>{user.name} {user.age}</div>
+          <div key={user._id}>
+          {user.name} {user.age}
+          <button id={user._id} onClick={this.handledelete}>삭제</button>
+          </div>
         )}
       </div>
     );
