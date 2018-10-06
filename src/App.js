@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import socketIOClient from 'socket.io-client';
 
 class App extends Component {
   
@@ -14,6 +15,11 @@ class App extends Component {
 
   componentDidMount() {
     this.getUser();
+    const socket = socketIOClient('http://localhost:8080');
+    socket.on('news', data => {
+      console.log(data);
+      socket.emit('reply', 'Hello, Node.js');
+    });
   }
 
   getUser = () => {
@@ -42,6 +48,7 @@ class App extends Component {
         'Content-Type': 'application/json'
       },
     })
+    .then(res => res.json())
     .then(res => this.getUser());
 
     document.getElementById('name').value = "";
