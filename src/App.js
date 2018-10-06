@@ -42,17 +42,39 @@ class App extends Component {
         'Content-Type': 'application/json'
       },
     })
-    .then(res => res.json())
     .then(res => this.getUser());
 
     document.getElementById('name').value = "";
     document.getElementById('age').value = "";
   }
 
+  handleupdate = (e) => {
+    e.preventDefault();
+    const { id } = e.target;
+    const name = prompt("바꿀 이름을 입력하세요.");
+    
+    if(!name) {
+      return alert("이름을 입력해주세요.");
+    }
+
+    fetch(`/users/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        name,
+      }),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(res => this.getUser());
+    
+  }
+
   handledelete = (e) => {
     e.preventDefault();
     const { id } = e.target;
-    fetch('/users/'+id, {
+    fetch(`/users/${id}`, {
       method: 'DELETE',
       headers: {
         'Accept': 'application/json',
@@ -74,6 +96,7 @@ class App extends Component {
         {this.state.users.map(user =>
           <div key={user._id}>
           {user.name} {user.age}
+          <button id={user._id} onClick={this.handleupdate}>수정</button>
           <button id={user._id} onClick={this.handledelete}>삭제</button>
           </div>
         )}
